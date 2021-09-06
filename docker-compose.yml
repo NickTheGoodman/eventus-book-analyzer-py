@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  app:
+    image: book-analyzer
+    build: .
+    environment:
+      - ENV
+    ports:
+      - 57000:8080
+
