@@ -21,3 +21,5 @@ Note: each "day" is roughly 8 hours
     - Work out initial pseudo code on paper
     - Write bash script and main python script to correctly parse CLA and stdin
     - Bonus: Setup container build & execution via Docker/docker-compose and corresponding wrapper scripts 
+- Day 2
+    - Work out pseudo code on paper for a better-optimized algorithm 
