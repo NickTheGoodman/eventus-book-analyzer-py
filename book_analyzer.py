@@ -1,8 +1,8 @@
 import re
 import sys
-from typing import TextIO, Tuple
+from typing import TextIO
 
-from src.bid_book import BidBook, Bid, UNCALCULATED_VALUE
+from src.bid_book import BidBook, Bid, UNCALCULATED_VALUE, StateOfBidBook
 from src.market_log_commands import AddOrderCommand, ReduceOrderCommand, MessageTypeEnum, MarketLogCommand
 
 
@@ -16,19 +16,16 @@ class BookAnalyzer:
             prev_bid_vars = self._book.get_state_of_bid_book()
 
             market_command = self._parse_message(line.rstrip())
-
             if market_command is None:
                 continue
 
             print(f" timestamp: {market_command.timestamp}")
 
             self._process_market_command(market_command)
-
             cur_bid_vars = self._book.get_state_of_bid_book()
 
             self._output_selling_income_if_needed(
                 market_command.timestamp,
-                self._target_size,
                 prev_bid_vars,
                 cur_bid_vars)
 
@@ -84,10 +81,10 @@ class BookAnalyzer:
     def _command_to_bid(command: AddOrderCommand) -> Bid:
         return Bid(command.order_id, command.price, command.size)
 
-    def _output_selling_income_if_needed(self, timestamp: int,
-                                         target_size: int,
-                                         prev_state_of_bid_book: Tuple[int, int, int],
-                                         cur_state_of_bid_book: Tuple[int, int, int]):
+    def _output_selling_income_if_needed(self,
+                                         timestamp: int,
+                                         prev_state_of_bid_book: StateOfBidBook,
+                                         cur_state_of_bid_book: StateOfBidBook):
         prev_total_bid_size, \
             prev_price_of_cheapest_bid_to_buy, \
             prev_selling_income = \
@@ -102,7 +99,7 @@ class BookAnalyzer:
             cur_selling_income != prev_selling_income
 
         print(f" book:\t\t{self._book}")
-        print(f" bids_to_buy:\t{self._book.bids_to_buy}")
+        print(f" bids_to_buy:\t{self._book.bids_to_take}")
         print(f" prev_bid_vars:\t{prev_state_of_bid_book}")
         print(f" cur_bid_vars:\t{cur_state_of_bid_book}")
 
