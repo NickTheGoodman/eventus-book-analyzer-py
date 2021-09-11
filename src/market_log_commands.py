@@ -16,35 +16,34 @@ class SideOfBookEnum(Enum):
 class MarketLogCommand:
     timestamp: int
     order_id: str
-    size: int
 
     def get_message_type(self):
         return None
 
 
 @dataclass
-class AddLimitOrder(MarketLogCommand):
+class AddOrderCommand(MarketLogCommand):
     side: SideOfBookEnum
-    price_in_cents: int
+    price: int
+    size: int
 
-    def __str__(self):
-        return f"{self.timestamp} A {self.order_id} {self.side} {self.price_in_cents} {self.size}"
-
-    def get_message_type(self):
+    def get_message_type(self) -> MessageTypeEnum:
         return MessageTypeEnum.ADD_LIMIT_ORDER
 
-    def is_bid(self):
-        return self.side == SideOfBookEnum.BID
+    def get_side(self) -> SideOfBookEnum:
+        return self.side
 
-    def is_ask(self):
-        return self.side == SideOfBookEnum.ASK
+    # def __str__(self) -> str:
+    #     return f"{self.timestamp} A {self.order_id} {self.side} {self.price} {self.size}"
 
 
 @dataclass
-class ReduceLimitOrder(MarketLogCommand):
-    def __str__(self):
-        return f"{self.timestamp} R {self.order_id} {self.size}"
+class ReduceOrderCommand(MarketLogCommand):
+    size_reduction: int
 
-    def get_message_type(self):
+    def get_message_type(self) -> MessageTypeEnum:
         return MessageTypeEnum.REDUCE_LIMIT_ORDER
+
+    # def __str__(self) -> str:
+    #     return f"{self.timestamp} R {self.order_id} {self.size_reduction}"
 

@@ -23,3 +23,7 @@
     - Work out pseudo code on paper for a better-optimized algorithm
 - Day 3 [~4 hrs]
     - Setup initial classes and market log processing
+- Day 4 [~8 hrs]
+    - Cleanup market log processing
+    - Implement initial BidBook()
+    - Introduce typing to existing classes
