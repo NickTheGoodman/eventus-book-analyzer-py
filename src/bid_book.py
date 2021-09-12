@@ -2,7 +2,7 @@ from collections import namedtuple
 from dataclasses import dataclass
 from typing import Dict, List
 
-from src.constants import SideOfBookEnum, UNCALCULATED_VALUE, MessageTypeEnum
+from constants import SideOfBookEnum, UNCALCULATED_VALUE, MessageTypeEnum
 
 StateOfBook = namedtuple('StateOfBook', [
     'total_size',

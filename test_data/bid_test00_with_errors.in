@@ -1,0 +1,16 @@
+1 A H B 25.00 100
+broken line
+2 A D B 21.00 300
+0 X X X 00.00 0
+3 A L B 29.00 100
+4 A L B 29.00 100 extra
+4 A D2 B 21.00 100
+5 A J B 27.00 200
+6 R H 25
+0 X X 00
+7 R H 25
+7 R H 25 extra
+8 R H 25
+9 R H 30
+10 R D2 105
+11 R D 300

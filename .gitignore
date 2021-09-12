@@ -131,3 +131,5 @@ dmypy.json
 ### My additions
 # IDE
 .idea/
+*.out.*
+*.err.*

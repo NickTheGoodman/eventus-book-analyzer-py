@@ -7,4 +7,4 @@ if [[ -z "$1" || ! $1 =~ ^[0-9]+$ ]] ; then
   exit 1
 fi
 
-python3 ./book_analyzer.py "$@" <&0
+python3 src/book_analyzer.py "$@" <&0

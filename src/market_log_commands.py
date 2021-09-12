@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from src.constants import SideOfBookEnum, MessageTypeEnum
+from constants import SideOfBookEnum, MessageTypeEnum
 
 
 @dataclass
