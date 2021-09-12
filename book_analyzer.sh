@@ -6,6 +6,5 @@ if [[ -z "$1" || ! $1 =~ ^[0-9]+$ ]] ; then
   echo "Bad input"
   exit 1
 fi
-targetSize="$1"
 
-python3 ./book_analyzer.py "$targetSize" <&0
+python3 ./book_analyzer.py "$@" <&0

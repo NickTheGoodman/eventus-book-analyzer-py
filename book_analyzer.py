@@ -8,8 +8,9 @@ from src.market_log_commands import AddOrderCommand, ReduceOrderCommand, MarketL
 
 
 class BookAnalyzer:
-    def __init__(self, target_size: int):
+    def __init__(self, target_size: int, debug_flag: bool):
         self._target_size = target_size
+        self._debug_flag = debug_flag
         self._bid_book = LimitOrderBook(SideOfBookEnum.BID, target_size)
         self._ask_book = LimitOrderBook(SideOfBookEnum.ASK, target_size)
 
@@ -19,7 +20,6 @@ class BookAnalyzer:
             prev_ask_state = self._ask_book.get_state_of_book()
 
             cmd = self._parse_message(line.rstrip())
-            print(f"cmd:\t{cmd}")
             if cmd is None:
                 continue
 
@@ -35,6 +35,14 @@ class BookAnalyzer:
                 side_of_book,
                 relevant_prev_state,
                 relevant_cur_state
+            )
+
+            self._book_analyzer_debug_print(
+                cmd,
+                side_of_book,
+                relevant_prev_state,
+                relevant_cur_state,
+                self._debug_flag
             )
 
     def _get_state_of_book(self, side_of_book: SideOfBookEnum) -> StateOfBook:
@@ -135,28 +143,12 @@ class BookAnalyzer:
         total_price_has_changed = \
             cur_total_price != prev_total_price
 
-        print(f" timestamp:\t{timestamp}")
-        print(f" side_of_book:\t{side_of_book}")
-        if side_of_book == SideOfBookEnum.BID:
-            print(f" bid_book:\t{self._bid_book}")
-            print(f" bids_to_take:\t{self._bid_book.orders_to_take}")
-            print(f" prev_bid_state:{prev_state_of_book}")
-            print(f" cur_bid_state:\t{cur_state_of_book}")
-        elif side_of_book == SideOfBookEnum.ASK:
-            print(f" ask_book:\t{self._ask_book}")
-            print(f" asks_to_take:\t{self._bid_book.orders_to_take}")
-            print(f" prev_ask_state{prev_state_of_book}")
-            print(f" cur_ask_state:\t{cur_state_of_book}")
-
         if total_price_has_changed:
             sell_or_buy = \
                 'S' if side_of_book == SideOfBookEnum.BID else \
                 'B'
-
             total_price_to_display = self._total_price_to_display(cur_total_price)
             print_to_stdout(f"{timestamp} {sell_or_buy} {total_price_to_display}")
-
-        print()
 
     @staticmethod
     def _to_dollars_and_cents(price_in_cents: int) -> str:
@@ -168,6 +160,26 @@ class BookAnalyzer:
         return "NA" if total_price_in_cents == UNCALCULATED_VALUE else \
             self._to_dollars_and_cents(total_price_in_cents)
 
+    def _book_analyzer_debug_print(self,
+                                   cmd: MarketLogCommand,
+                                   side_of_book: SideOfBookEnum,
+                                   prev_state_of_book: StateOfBook,
+                                   cur_state_of_book: StateOfBook,
+                                   debug_flag=False):
+        if debug_flag:
+            print_to_stdout(f" cmd:\t{cmd}")
+            print_to_stdout(f" side_of_book:\t{side_of_book}")
+            if side_of_book == SideOfBookEnum.BID:
+                print_to_stdout(f" bid_book:\t{self._bid_book}")
+                print_to_stdout(f" bids_to_take:\t{self._bid_book.orders_to_take}")
+                print_to_stdout(f" prev_bid_state:{prev_state_of_book}")
+                print_to_stdout(f" cur_bid_state:\t{cur_state_of_book}")
+            elif side_of_book == SideOfBookEnum.ASK:
+                print_to_stdout(f" ask_book:\t{self._ask_book}")
+                print_to_stdout(f" asks_to_take:\t{self._bid_book.orders_to_take}")
+                print_to_stdout(f" prev_ask_state{prev_state_of_book}")
+                print_to_stdout(f" cur_ask_state:\t{cur_state_of_book}")
+            print_to_stdout("")
 
 def print_to_stdout(*msg):
     print(*msg, file=sys.stdout)
@@ -177,7 +189,18 @@ def print_to_stderr(*msg):
     print(*msg, file=sys.stderr)
 
 
+def parse_args(sys_args):
+    """
+    2 positional args:
+        The 1st positional arg is the target_size (int)
+        Anything being typed in the 2nd positional arg activates the debug flag.
+    """
+    arg1: int = int(sys_args[1])
+    arg2: bool = len(sys_args) > 2
+    return arg1, arg2
+
+
 if __name__ == "__main__":
-    target_size_arg = int(sys.argv[1])
-    analyzer = BookAnalyzer(target_size_arg)
+    (target_size_arg, debug_flag_arg) = parse_args(sys.argv)
+    analyzer = BookAnalyzer(target_size_arg, debug_flag_arg)
     analyzer.analyze_market_log(sys.stdin)
