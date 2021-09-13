@@ -140,9 +140,10 @@ storing these Groups in a Binary Search Tree were nice ways to optimize the algo
 Once I had AddOrder and ReduceOrder psuedo-code fully written to handle bids, I started writing code.
 See the Progress Tracking section of this README for more details.
  
-The current solution unconditionally recalculates selling income/buying expense
-every time a new bid/ask is added or reduced,
-meaning I stopped short of implementing the smarter version of _should_calculate, unfortunately.
+My initial goal was to write the simplified solution first, and then add the optimizations later 
+once I achieved Correctness.
+The current solution unconditionally recalculates selling income/buying expense every time a new bid/ask is added or reduced,
+meaning I stopped short of implementing the smarter version of _should_calculate and incorporating a BST, unfortunately.
 See the Hypothetical Next Steps for Improvement section for details.
 
 _**How does your implementation scale with respect to the target size and with respect to the number of orders in the book?**_

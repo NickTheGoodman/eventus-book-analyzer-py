@@ -4,8 +4,8 @@
 TEST_DIR="test_data"
 
 function cleanup_test_files() {
-  rm $TEST_DIR/*.out.*
-  rm $TEST_DIR/*.err.*
+  rm -f $TEST_DIR/*.out.*
+  rm -f $TEST_DIR/*.err.*
 }
 
 TEST_CASES=(
