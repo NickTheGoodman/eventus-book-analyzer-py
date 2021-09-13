@@ -84,7 +84,6 @@ class LimitOrderBook:
     def get_order(self, order_id: str) -> LimitOrder:
         if order_id in self._orders.keys():
             return self._orders[order_id]
-        return None
 
     def add_order(self, order_id: str, price: int, size: int):
         order = LimitOrder(self._side_of_book, order_id, price, size)
@@ -102,7 +101,7 @@ class LimitOrderBook:
         )
 
     def _order_group_already_exists(self, price: int) -> bool:
-        return price in self._order_groups.keys()
+        return price in self._order_groups
 
     def _add_order_by_id(self, order: LimitOrder):
         self._orders[order.order_id] = order

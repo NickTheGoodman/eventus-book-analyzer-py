@@ -2,7 +2,7 @@ import re
 import sys
 from typing import TextIO
 
-from bid_book import LimitOrderBook, LimitOrder, StateOfBook
+from limit_order_book import LimitOrderBook, LimitOrder, StateOfBook
 from constants import SideOfBookEnum, MessageTypeEnum, UNCALCULATED_VALUE
 from market_log_commands import AddOrderCommand, ReduceOrderCommand, MarketLogCommand
 
@@ -73,7 +73,6 @@ class BookAnalyzer:
 
     @staticmethod
     def _parse_reduce_order_command(message: str) -> ReduceOrderCommand:
-        # TODO: need to further validate that all input args are accounted for
         timestamp_str, message_type, order_id, reduction_size_str = message.split(' ')
         timestamp = int(timestamp_str)
         reduction_size = int(reduction_size_str)
@@ -100,7 +99,7 @@ class BookAnalyzer:
     def _process_add_order_command(self, cmd: AddOrderCommand):
         if cmd.side == SideOfBookEnum.BID:
             self._bid_book.add_order(cmd.order_id, cmd.price, cmd.size)
-        else:
+        elif cmd.side == SideOfBookEnum.ASK:
             self._ask_book.add_order(cmd.order_id, cmd.price, cmd.size)
         return cmd.side
 
@@ -124,10 +123,7 @@ class BookAnalyzer:
         order = self._bid_book.get_order(order_id)
         if order is not None:
             return order
-        order = self._ask_book.get_order(order_id)
-        if order is not None:
-            return order
-        return None
+        return self._ask_book.get_order(order_id)
 
     def _output_relevant_total_price_if_needed(self,
                                                timestamp: int,
