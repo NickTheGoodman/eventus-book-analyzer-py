@@ -4,8 +4,8 @@
 TEST_DIR="test_data"
 
 function cleanup_test_files() {
-    rm $TEST_DIR/*.out.*
-    rm $TEST_DIR/*.err.*
+  rm $TEST_DIR/*.out.*
+  rm $TEST_DIR/*.err.*
 }
 
 TEST_CASES=(
@@ -23,11 +23,12 @@ for test_case in ${TEST_CASES[*]}; do
   input_file=$(echo "$test_case" | cut -d'|' -f1)
   target_size=$(echo "$test_case" | cut -d'|' -f2)
   filename_without_suffix=$(echo "$input_file" | cut -d'.' -f1)
-  output_file="${filename_without_suffix}.out.$target_size"
-  correct_out_file="${filename_without_suffix}.correct-out.$target_size"
+  out_file="${filename_without_suffix}.out.$target_size"
   err_file="${filename_without_suffix}.err.$target_size"
+  correct_out_file="${filename_without_suffix}.correct-out.$target_size"
+  correct_err_file="${filename_without_suffix}.correct-err.$target_size"
 
-  CMD="./book_analyzer.sh $target_size < $input_file > $output_file 2>$err_file"
+  CMD="./book_analyzer.sh $target_size < $input_file > $out_file 2>$err_file"
   echo "Command:        $CMD"
   START=$(date +%s.%N)
   eval "$CMD"
@@ -35,5 +36,15 @@ for test_case in ${TEST_CASES[*]}; do
   ELAPSED=$(echo "$END - $START" | bc)
   echo "Execution time: $ELAPSED"
 
+  out_diff=$(diff "$out_file" "$correct_out_file")
+  out_diff_check=$(echo "$out_diff" | wc -l)
+  if [ "$out_diff_check" -ge 2 ]; then
+    echo "FAIL. Diff detected between stdout file and correct output file."
+  fi
 
+  err_diff=$(diff "$err_file" "$correct_err_file")
+  err_diff_check=$(echo "$err_diff" | wc -l)
+  if [ "$err_diff_check" -ge 2 ]; then
+    echo "FAIL. Diff detected between stderr file and correct error file."
+  fi
 done
