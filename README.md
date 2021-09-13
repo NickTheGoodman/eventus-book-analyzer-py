@@ -27,3 +27,7 @@
     - Cleanup market log processing
     - Implement initial BidBook()
     - Introduce typing to existing classes
+- Day 5 [~10 hrs]
+    - Finish initial full implementation
+- Day 6 [~2 hours]
+    - Add testing and cleanup the repo's Dockerization

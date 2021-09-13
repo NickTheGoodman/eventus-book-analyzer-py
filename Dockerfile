@@ -2,6 +2,9 @@ FROM python:3.8-slim
 
 WORKDIR /workspace
 
+RUN apt update && \
+    apt-get -y install bc
+
 COPY . .
 
-CMD ["bin/book-analyzer.sh", "200", "<", "/workspace/test_data/bid_test00.in"]
+CMD ["/workspace/bin/test.sh"]
